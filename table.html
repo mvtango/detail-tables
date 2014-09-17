@@ -1,2 +1,114 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<title>DataTable </title>
+	<link rel="stylesheet" type="text/css" href="resources/site.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/datatables/media/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/datatables-responsive/css/dataTables.responsive.css">
+	<style type="text/css" class="init">
+
+td.details-control {
+	background: url('resources/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+tr.shown td.details-control {
+	background: url('resources/details_close.png') no-repeat center center;
+}
+
+	</style>
+	<script type="text/javascript" language="javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/datatables-responsive/js/dataTables.responsive.js"></script>
+	<script type="text/javascript" class="init">
+
+
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+	// `d` is the original data object for the row
+	return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+		'<tr>'+
+			'<td>Full name:</td>'+
+			'<td>'+d.name+'</td>'+
+		'</tr>'+
+		'<tr>'+
+			'<td>Extension number:</td>'+
+			'<td>'+d.extn+'</td>'+
+		'</tr>'+
+		'<tr>'+
+			'<td>Extra info:</td>'+
+			'<td>And any further details here (images etc)...</td>'+
+		'</tr>'+
+	'</table>';
+}
+
+$(document).ready(function() {
+	var table = $('#example').DataTable( {
+		"ajax": "retribucions-i-dietes.txt",
+		"columns": [
+			{
+				"class":          'details-control',
+				"orderable":      false,
+				"data":           null,
+				"defaultContent": ''
+			},
+			{ "data": "nom" },
+			{ "data": "dieta" },
+			{ "data": "total" }
+		],
+		"language": { "url" : "resources/ca_CA.txt", 
+            			"decimal": ",",
+            			"thousands": "."
+			    },
+		"responsive" : false,
+		"order": [[1, 'asc']]
+	} );
+	
+	// Add event listener for opening and closing details
+	$('#example tbody').on('click', 'td.details-control', function () {
+		var tr = $(this).closest('tr');
+		var row = table.row( tr );
+
+		if ( row.child.isShown() ) {
+			// This row is already open - close it
+			row.child.hide();
+			tr.removeClass('shown');
+		}
+		else {
+			// Open this row
+			row.child( format(row.data()) ).show();
+			tr.addClass('shown');
+		}
+	} );
+} );
+
+
+	</script>
+</head>
+
+<body class="wide comments example">
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Nom</th>
+							<th>dieta</th>
+							<th>total</th>
+						</tr>
+					</thead>
+
+					<tfoot>
+						<tr>
+							<th></th>
+							<th>Nom</th>
+							<th>dieta</th>
+							<th>total</th>
+						</tr>
+					</tfoot>
+				</table>
+
+
+</body>
 </html>

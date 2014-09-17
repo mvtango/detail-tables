@@ -1,0 +1,23 @@
+{
+  "name": "tabletop-datatables",
+  "version": "0.0.1",
+  "homepage": "https://github.com/mvtango/tabletop-datatables",
+  "authors": [
+    "Martin Virtel <martin.virtel@gmail.com>"
+  ],
+  "description": "Meshup of datatables and tabletop.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tabletop": "~1.3.5",
+    "datatables-responsive": "~1.0.1",
+    "datatables": "~1.10.2"
+  }
+}

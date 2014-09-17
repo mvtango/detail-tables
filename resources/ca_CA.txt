@@ -1,0 +1,17 @@
+{
+	"processing": "Un moment, si us plau.",
+	"lengthMenu": "_MENU_ entrades",
+	"zeroRecords": "cap entrada disponible",
+	"info": "_START_ a _END_ de _TOTAL_ entrades",
+	"infoEmpty": "0 entrades",
+	"infoFiltered": "(de _MAX_ entrades )",
+	"infoPostFix": "",
+	"search": "Cercar",
+	"url": "",
+	"paginate": {
+		"first":    "Primera",
+		"previous": "Anterior",
+		"next":     "Següent",
+		"last":     "Última"
+	}
+}
