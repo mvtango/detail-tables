@@ -1,0 +1,18 @@
+common:
+
+ database: "sqlite:///data.db"
+ prefix: ./export
+ format: json
+
+exports:
+
+      - query: "SELECT max(pid) as id, count(id) as dc, max(pos) as pos, nom, sum(dietes) as dietes, sum(retribucio) as retribucio, (sum(dietes)+0)+(sum(retribucio)+0) as total, sum(dietes)/sum(retribucio) as perc, sum(r2013) as r2013 FROM dietes where nom>'' group by nom"
+        wrap: False
+        filename: "index.json"
+
+      - query: "SELECT pid,carrec,dieta,dietes,r2013 from dietes"
+        mode: list 
+        wrap: false 
+        filename: "{{pid}}.json"
+      
+
