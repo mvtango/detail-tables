@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1">
 
-	<title>DataTable </title>
+	<title>dietes i retribucions </title>
 	<link rel="stylesheet" type="text/css" href="resources/site.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/datatables/media/css/jquery.dataTables.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/datatables-responsive/css/dataTables.responsive.css">
@@ -64,24 +64,6 @@ function format ( d ) {
 		});
 	
 	return '<div class="detailrow" id="'+domid+'"> <i>un moment ...</i> </div>';
-	
-
-	/*
-	return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-		'<tr>'+
-			'<td>Full name:</td>'+
-			'<td>'+d.name+'</td>'+
-		'</tr>'+
-		'<tr>'+
-			'<td>Extension number:</td>'+
-			'<td>'+d.extn+'</td>'+
-		'</tr>'+
-		'<tr>'+
-			'<td>Extra info:</td>'+
-			'<td>And any further details here (images etc)...</td>'+
-		'</tr>'+
-	'</table>';
-	*/
 }
 
 	_currency=d3.format(",.0f")
@@ -163,7 +145,7 @@ $(document).ready(function() {
             			"thousands": "."
 			    },
 		"responsive" : false,
-		"order": [[5, 'desc']]
+		"order": [[6, 'desc']]
 	} );
 	
 	// Add event listener for opening and closing details
@@ -204,8 +186,11 @@ $(document).ready(function() {
 					</thead>
 
 				</table>
-				<p class="right-justified">
+				<p style="width:100%; font-size:50%;">
+				<span style="float: left">fet com &lt;3 e dades per <a href="http://opengov.cat">opengov.cat</a>amb <a href="http://openrefine.org/">OpenRefine</a>, <a href="http://datatables.net/">Datatables</a>, <a href="https://github.com/pudo/dataset">Dataset</a> i altres eines excel·lents.</span>
+				<span style="float: right">
 				<a href="https://docs.google.com/spreadsheets/d/1VJ081DmWmYpSZhpVo9eWitn8OZ_m9cStFGOLR1CZKnw/pubhtml?gid=509646809&single=true">Font de Dades</a>
+				</span>
 				</p>
 				</div>
 
