@@ -3,13 +3,26 @@
 import csv
 import dataset
 import pprint
+import sys
 
-src=csv.DictReader(open("source.csv"))
+if len(sys.argv)>1 :
+    filename=sys.argv[1] 
+else :
+    filename="source.csv"
+
+dest='sqlite:///data.db'
+
+src=csv.DictReader(open(filename))
 store=dataset.connect('sqlite:///data.db')
 
-store.query("drop table dietes")
+try :
+    store.query("drop table dietes")
+except Exception :
+    pass 
+
 nameindex=dict()
 pid=0
+count=0
 
 with dataset.connect('sqlite:///data.db') as store :
     while True :
@@ -36,9 +49,12 @@ with dataset.connect('sqlite:///data.db') as store :
         r["pid"]=nameindex[r["nom"]]
         try :
             store['dietes'].insert(r)
+            count=count+1
         except Exception, e :
             print "Error %s inserting %s" % (e,pprint.pformat(r))
    
+print "{count} records, {pid} unique names from {filename}".format(**locals())
+
 
 
 

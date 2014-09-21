@@ -18,16 +18,55 @@ tr.shown td.details-control {
 	background: url('resources/details_close.png') no-repeat center center;
 }
 
+.right-justified {
+	text-align: right;
+	}
+
+td.right-justified {
+	font-family: Courier;
+	} 
+
+span.carrec {
+	font-size: 80%;
+	color: #808080;
+	display: inline-block;
+	padding-left: 1em;
+	}
+
+div.detailrow {
+	font-size:  75%;
+	margin-left: 38px;
+	}
+
+div.detailrow table th {
+		font-weight: bold;
+		}
 	</style>
 	<script type="text/javascript" language="javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
-	<script type="text/javascript" language="javascript" src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" language="javascript" src="bower_components/datatables-responsive/js/dataTables.responsive.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/jquery-Mustache/jquery.mustache.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/mustache.js/mustache.js"></script>
+	<script type="text/javascript" language="javascript" src="bower_components/d3/d3.min.js"></script>
 	<script type="text/javascript" class="init">
 
 
 /* Formatting function for row details - modify as you need */
 function format ( d ) {
 	// `d` is the original data object for the row
+	var domid="details-"+d.id;
+	$.ajax({ url : "./data/export/"+d.id+".json"}).done(function(data) {
+		$(data.results).each(function(i,e) {
+			e["dieta"]=currency(e["dieta"]);
+			e["dietes"]=currency(e["dietes"]);
+		});
+		$("#"+domid).html($.Mustache.render('detail',data));
+		});
+	
+	return '<div class="detailrow" id="'+domid+'"> <i>un moment ...</i> </div>';
+	
+
+	/*
 	return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
 		'<tr>'+
 			'<td>Full name:</td>'+
@@ -42,11 +81,41 @@ function format ( d ) {
 			'<td>And any further details here (images etc)...</td>'+
 		'</tr>'+
 	'</table>';
+	*/
 }
 
+	_currency=d3.format(",.0f")
+	
+	currency = function (v) { if(v==null) { return null; }
+					else
+				  { return _currency(v).replace(",",".")+"€" }
+				}
+	_percent  = d3.format(".1%")
+
+	percent = function (v) { if(v==null) { return null; }
+					else
+				  { return _percent(v) }
+				}
+	nom_carrec = { "display" : function (v,t,m) {
+				return v+'<br/><span class="carrec">'+m.pos+'</span>'
+				},
+
+			"filter" : function(v,t,m) { return v+" "+m.pos }
+		     }
+				
+
 $(document).ready(function() {
+
+	$("script[type=x-tmpl-mustache]").each(function(i,e) {
+		var $e=$(e);
+		$.Mustache.add($e.attr("id"), $e.html());
+	});
+
 	var table = $('#example').DataTable( {
-		"ajax": "retribucions-i-dietes.txt",
+		"ajax": { 
+			  "url" : "data/export/index.json",
+			  "dataSrc" : "results"
+			},
 		"columns": [
 			{
 				"class":          'details-control',
@@ -54,16 +123,47 @@ $(document).ready(function() {
 				"data":           null,
 				"defaultContent": ''
 			},
-			{ "data": "nom" },
-			{ "data": "dieta" },
-			{ "data": "total" }
+			{ "data": "nom",
+			  "render" : nom_carrec
+			},
+			{ "data": "dietes",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			},
+			{ "data": "retribucio",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "total",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "r2013",
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "perc",
+			  "render" : {
+			  	"display": percent 
+				},
+			  "className" : "right-justified"
+			
+			}
 		],
 		"language": { "url" : "resources/ca_CA.txt", 
             			"decimal": ",",
             			"thousands": "."
 			    },
 		"responsive" : false,
-		"order": [[1, 'asc']]
+		"order": [[5, 'desc']]
 	} );
 	
 	// Add event listener for opening and closing details
@@ -89,25 +189,44 @@ $(document).ready(function() {
 </head>
 
 <body class="wide comments example">
+				<div style="width: 644px">
 				<table id="example" class="display" cellspacing="0" width="100%">
 					<thead>
 						<tr>
 							<th></th>
-							<th>Nom</th>
-							<th>dieta</th>
-							<th>total</th>
+							<th>nom</th>
+							<th class="right-justified">dietes</th>
+							<th class="right-justified">retribució</th>
+							<th class="right-justified">total</th>
+							<th class="right-justified">2013 <div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px;">reunions previstes</div></th>
+							<th class="right-justified">perc</th>
 						</tr>
 					</thead>
 
-					<tfoot>
-						<tr>
-							<th></th>
-							<th>Nom</th>
-							<th>dieta</th>
-							<th>total</th>
-						</tr>
-					</tfoot>
 				</table>
+				<p class="right-justified">
+				<a href="https://docs.google.com/spreadsheets/d/1VJ081DmWmYpSZhpVo9eWitn8OZ_m9cStFGOLR1CZKnw/pubhtml?gid=509646809&single=true">Font de Dades</a>
+				</p>
+				</div>
+
+<script id="detail" type="x-tmpl-mustache">
+	<table cellpadding="5" cellspacing="0" border="0" style="padding-left:70px;">
+	<tr>
+		<th>reunió | funció </th>
+		<th>previstes</th>
+		<th>dieta</th>
+		<th>total</th>
+	</tr>
+	{{#results}}
+	<tr>
+		<td>{{carrec}}</td>
+		<td>{{r2013}}</td>
+		<td class="right-justified">{{dieta}}</td>
+		<td class="right-justified">{{dietes}}</td>
+	</tr>
+	{{/results}}
+        </table>	
+</script>
 
 
 </body>

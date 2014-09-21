@@ -6,7 +6,7 @@
 	"infoEmpty": "0 entrades",
 	"infoFiltered": "(de _MAX_ entrades )",
 	"infoPostFix": "",
-	"search": "Cercar",
+	"search": "Cercar Nom/Cárrec",
 	"url": "",
 	"paginate": {
 		"first":    "Primera",

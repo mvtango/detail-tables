@@ -10,7 +10,7 @@ exports:
         wrap: False
         filename: "index.json"
 
-      - query: "SELECT pid,carrec,dieta,dietes,r2013 from dietes"
+      - query: "SELECT pid,carrec,dieta,dietes,r2013 from dietes where carrec not like '|%' order by dietes desc"
         mode: list 
         wrap: false 
         filename: "{{pid}}.json"
