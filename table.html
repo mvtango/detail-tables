@@ -61,6 +61,8 @@ function format ( d ) {
 			e["dietes"]=currency(e["dietes"]);
 		});
 		$("#"+domid).html($.Mustache.render('detail',data));
+		}).fail(function() {
+			$("#"+domid).html("-");
 		});
 	
 	return '<div class="detailrow" id="'+domid+'"> <i>un moment ...</i> </div>';
