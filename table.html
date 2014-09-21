@@ -86,7 +86,44 @@ function format ( d ) {
 
 			"filter" : function(v,t,m) { return v+" "+m.pos }
 		     }
-				
+			
+	function pushToHash(state) {
+		window.completeState=state;
+		var s={};
+		$(['start','length','order']).each(function(i,e) {
+			s[e[0]]=state[e];
+		});
+		s['se']=state.search.search;
+		s['c']=[];
+		$(state.columns).each(function(i,e) {
+			s.c.push(e.visible);
+		});
+		document.location.href=document.location.href.replace(/#?[^#]+$/,"#"+encodeURIComponent(JSON.stringify(s)));
+	}
+
+	function readFromHash() {
+		var r={};
+		var o;
+		try {
+			o=JSON.parse(decodeURIComponent(document.location.hash.substr(1)));
+		} catch(e) {
+			o= undefined;
+		}
+		if (typeof o != "undefined") {
+			r["time"]=(new Date()).getTime();
+			r["start"]=o["s"];
+			r["length"]=o["l"];
+			r["order"]=o["o"];
+			r["search"]={ "smart":true,"regex":false,"caseInsensitive":true,"search":o["se"] };
+			r["columns"]=[];
+			$(o.c).each(function(i,e) {
+				r.columns.push({"visible":e,"search":{"search":"","smart":true,"regex":false,"caseInsensitive":true}});
+			});
+		return r;
+		}
+		return undefined;
+	}
+
 
 $(document).ready(function() {
 
@@ -95,7 +132,15 @@ $(document).ready(function() {
 		$.Mustache.add($e.attr("id"), $e.html());
 	});
 
-	var table = $('#example').DataTable( {
+	var init_table={
+		"deferRender" : true,
+		"stateSave" : true,
+		"stateSaveCallback" : function(s) {
+			pushToHash(s.oSavedState);
+			},
+		"stateLoadCallback" : function(s) {
+			return readFromHash();
+			},
 		"ajax": { 
 			  "url" : "data/export/index.json",
 			  "dataSrc" : "results"
@@ -148,7 +193,8 @@ $(document).ready(function() {
 			    },
 		"responsive" : false,
 		"order": [[6, 'desc']]
-	} );
+	};
+	var table = $('#example').DataTable(init_table);
 	
 	// Add event listener for opening and closing details
 	$('#example tbody').on('click', 'td.details-control', function () {
