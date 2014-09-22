@@ -41,6 +41,8 @@ div.detailrow {
 div.detailrow table th {
 		font-weight: bold;
 		}
+
+		#example_filter { float: left; padding-left: 1em ; }
 	</style>
 	<script type="text/javascript" language="javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script type="text/javascript" language="javascript" src="bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
@@ -135,6 +137,8 @@ $(document).ready(function() {
 	var init_table={
 		"deferRender" : true,
 		"stateSave" : true,
+		"lengthChange" : false, 
+		"pagingType" : "simple",
 		"stateSaveCallback" : function(s) {
 			pushToHash(s.oSavedState);
 			},
