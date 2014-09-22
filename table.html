@@ -224,12 +224,12 @@ $(document).ready(function() {
 					<thead>
 						<tr>
 							<th></th>
-							<th>nom</th>
-							<th class="right-justified">dietes</th>
-							<th class="right-justified">retribució</th>
-							<th class="right-justified">total</th>
-							<th class="right-justified">2013 <div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px;">reunions previstes</div></th>
-							<th class="right-justified">perc</th>
+							<th>Nom</th>
+							<th class="right-justified">Dietes</th>
+							<th class="right-justified">Retribució</th>
+							<th class="right-justified">Total<div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">Dietes + Retribució</div></th>
+							<th class="right-justified">2013 <div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">reunions previstes</div></th>
+							<th class="right-justified">%<div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">por dietes</div></th>
 						</tr>
 					</thead>
 
@@ -245,10 +245,10 @@ $(document).ready(function() {
 <script id="detail" type="x-tmpl-mustache">
 	<table cellpadding="5" cellspacing="0" border="0" style="padding-left:70px;">
 	<tr>
-		<th>reunió | funció </th>
-		<th>previstes</th>
-		<th>dieta</th>
-		<th>total</th>
+		<th>Reunió | Funció </th>
+		<th>2013<div style="font-size:8px;line-height: 9px; font-weight: normal; display: inline-block;">Reunions previstes</div></th>
+		<th>Dieta<div style="font-size:8px;line-height: 9px; font-weight: normal; display: inline-block;">por reunió</div></th>
+		<th>Total</th>
 	</tr>
 	{{#results}}
 	<tr>

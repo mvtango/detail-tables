@@ -1,12 +1,12 @@
 {
 	"processing": "Un moment, si us plau.",
-	"lengthMenu": "_MENU_ entrades",
+	"lengthMenu": "_MENU_ Entrades",
 	"zeroRecords": "cap entrada disponible",
 	"info": "_START_ a _END_ de _TOTAL_ entrades",
 	"infoEmpty": "0 entrades",
 	"infoFiltered": "(de _MAX_ entrades )",
 	"infoPostFix": "",
-	"search": "Cercar Nom/Cárrec",
+	"search": "Cercar Nom/Càrrec",
 	"url": "",
 	"paginate": {
 		"first":    "Primera",
