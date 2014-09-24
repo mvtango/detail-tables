@@ -1,0 +1,17 @@
+{
+	"processing": "Un momento, por favor.",
+	"lengthMenu": "_MENU_ Entradas",
+	"zeroRecords": "no hay entradas disponibles",
+	"info": "_START_ a _END_ de _TOTAL_ entradas",
+	"infoEmpty": "0 entradas",
+	"infoFiltered": "(de _MAX_ entradas )",
+	"infoPostFix": "",
+	"search": "Buscar Nombre/Cargo",
+	"url": "",
+	"paginate": {
+		"first":    "Primera",
+		"previous": "Anterior",
+		"next":     "Siguiente",
+		"last":     "Última"
+	}
+}

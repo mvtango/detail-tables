@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<title>dietas y salarios </title>
+	<link rel="stylesheet" type="text/css" href="../resources/site.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/datatables/media/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="../bower_components/datatables-responsive/css/dataTables.responsive.css">
+	<style type="text/css" class="init">
+
+td.details-control {
+	background: url('../resources/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+tr.shown td.details-control {
+	background: url('../resources/details_close.png') no-repeat center center;
+}
+
+.right-justified {
+	text-align: right;
+	}
+
+td.right-justified {
+	font-family: Courier;
+	} 
+
+span.carrec {
+	font-size: 80%;
+	color: #808080;
+	display: inline-block;
+	padding-left: 1em;
+	}
+
+div.detailrow {
+	font-size:  75%;
+	margin-left: 38px;
+	}
+
+div.detailrow table th {
+		font-weight: bold;
+		}
+
+		#example_filter { float: left; padding-left: 1em ; }
+	</style>
+	<script type="text/javascript" language="javascript" src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../bower_components/datatables-responsive/js/dataTables.responsive.js"></script>
+	<script type="text/javascript" language="javascript" src="../bower_components/jquery-Mustache/jquery.mustache.js"></script>
+	<script type="text/javascript" language="javascript" src="../bower_components/mustache.js/mustache.js"></script>
+	<script type="text/javascript" language="javascript" src="../bower_components/d3/d3.min.js"></script>
+	<script type="text/javascript" class="init">
+
+
+/* Formatting function for row details - modify as you need */
+function format ( d ) {
+	// `d` is the original data object for the row
+	var domid="details-"+d.id;
+	$.ajax({ url : "../data/export/"+d.id+".json"}).done(function(data) {
+		$(data.results).each(function(i,e) {
+			e["dieta"]=currency(e["dieta"]);
+			e["dietes"]=currency(e["dietes"]);
+		});
+		$("#"+domid).html($.Mustache.render('detail',data));
+		}).fail(function() {
+			$("#"+domid).html("-");
+		});
+	
+	return '<div class="detailrow" id="'+domid+'"> <i>un momento ...</i> </div>';
+}
+
+	_currency=d3.format(",.0f")
+	
+	currency = function (v) { if(v==null) { return null; }
+					else
+				  { return _currency(v).replace(",",".")+"€" }
+				}
+	_percent  = d3.format(".1%")
+
+	percent = function (v) { if(v==null) { return null; }
+					else
+				  { return _percent(v) }
+				}
+	nom_carrec = { "display" : function (v,t,m) {
+				return v+'<br/><span class="carrec">'+m.pos+'</span>'
+				},
+
+			"filter" : function(v,t,m) { return v+" "+m.pos }
+		     }
+			
+	function pushToHash(state) {
+		window.completeState=state;
+		var s={};
+		$(['start','length','order']).each(function(i,e) {
+			s[e[0]]=state[e];
+		});
+		s['se']=state.search.search;
+		s['c']=[];
+		$(state.columns).each(function(i,e) {
+			s.c.push(e.visible);
+		});
+		document.location.href=document.location.href.replace(/#?[^#]+$/,"#"+encodeURIComponent(JSON.stringify(s)));
+	}
+
+	function readFromHash() {
+		var r={};
+		var o;
+		try {
+			o=JSON.parse(decodeURIComponent(document.location.hash.substr(1)));
+		} catch(e) {
+			o= undefined;
+		}
+		if (typeof o != "undefined") {
+			r["time"]=(new Date()).getTime();
+			r["start"]=o["s"];
+			r["length"]=o["l"];
+			r["order"]=o["o"];
+			r["search"]={ "smart":true,"regex":false,"caseInsensitive":true,"search":o["se"] };
+			r["columns"]=[];
+			$(o.c).each(function(i,e) {
+				r.columns.push({"visible":e,"search":{"search":"","smart":true,"regex":false,"caseInsensitive":true}});
+			});
+		return r;
+		}
+		return undefined;
+	}
+
+
+$(document).ready(function() {
+
+	$("script[type=x-tmpl-mustache]").each(function(i,e) {
+		var $e=$(e);
+		$.Mustache.add($e.attr("id"), $e.html());
+	});
+
+	var init_table={
+		"deferRender" : true,
+		"stateSave" : true,
+		"lengthChange" : false, 
+		"pagingType" : "simple",
+		"stateSaveCallback" : function(s) {
+			pushToHash(s.oSavedState);
+			},
+		"stateLoadCallback" : function(s) {
+			return readFromHash();
+			},
+		"ajax": { 
+			  "url" : "../data/export/index.json",
+			  "dataSrc" : "results"
+			},
+		"columns": [
+			{
+				"class":          'details-control',
+				"orderable":      false,
+				"data":           null,
+				"defaultContent": ''
+			},
+			{ "data": "nom",
+			  "render" : nom_carrec
+			},
+			{ "data": "dietes",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			},
+			{ "data": "retribucio",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "total",
+			  "render" : {
+			  	"display": currency
+				},
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "r2013",
+			  "className" : "right-justified"
+			
+			},
+			{ "data": "perc",
+			  "render" : {
+			  	"display": percent 
+				},
+			  "className" : "right-justified"
+			
+			}
+		],
+		"language": { "url" : "../resources/es_ES.txt", 
+            			"decimal": ",",
+            			"thousands": "."
+			    },
+		"responsive" : false,
+		"order": [[6, 'desc']]
+	};
+	var table = $('#example').DataTable(init_table);
+	
+	// Add event listener for opening and closing details
+	$('#example tbody').on('click', 'td.details-control', function () {
+		var tr = $(this).closest('tr');
+		var row = table.row( tr );
+
+		if ( row.child.isShown() ) {
+			// This row is already open - close it
+			row.child.hide();
+			tr.removeClass('shown');
+		}
+		else {
+			// Open this row
+			row.child( format(row.data()) ).show();
+			tr.addClass('shown');
+		}
+	} );
+} );
+
+
+	</script>
+</head>
+
+<body class="wide comments example">
+				<div style="width: 644px">
+				<table id="example" class="display" cellspacing="0" width="100%">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Nombre</th>
+							<th class="right-justified">Dietas</th>
+							<th class="right-justified">Sueldo</th>
+							<th class="right-justified">Total<div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">Dietas + Sueldo</div></th>
+							<th class="right-justified">2013 <div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">Reuniones previstas</div></th>
+							<th class="right-justified">%<div style="font-size: 8px; color: #808080; display:inline-block; line-height: 10px; font-weight: normal">por dietas</div></th>
+						</tr>
+					</thead>
+
+				</table>
+				<p style="width:100%; font-size:50%;">
+				<span style="float: left">Hecho com &lt;3 y datos por <a href="http://opengov.cat">opengov.cat</a>con <a href="http://openrefine.org/">OpenRefine</a>, <a href="http://datatables.net/">Datatables</a>, <a href="https://github.com/pudo/dataset">Dataset</a> y otras excelentes herramientas.</span>
+				<span style="float: right">
+				<a href="https://docs.google.com/spreadsheets/d/1VJ081DmWmYpSZhpVo9eWitn8OZ_m9cStFGOLR1CZKnw/pubhtml?gid=509646809&single=true">Fuente de Datos</a>
+				</span>
+				</p>
+				</div>
+
+<script id="detail" type="x-tmpl-mustache">
+	<table cellpadding="5" cellspacing="0" border="0" style="padding-left:70px;">
+	<tr>
+		<th>Reunión | Función </th>
+		<th>2013<div style="font-size:8px;line-height: 9px; font-weight: normal; display: inline-block;">Reuniones previstes</div></th>
+		<th>Dieta<div style="font-size:8px;line-height: 9px; font-weight: normal; display: inline-block;">por reunión</div></th>
+		<th>Total</th>
+	</tr>
+	{{#results}}
+	<tr>
+		<td>{{carrec}}</td>
+		<td>{{r2013}}</td>
+		<td class="right-justified">{{dieta}}</td>
+		<td class="right-justified">{{dietes}}</td>
+	</tr>
+	{{/results}}
+        </table>	
+</script>
+
+
+</body>
+</html>
